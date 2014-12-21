@@ -1,0 +1,7 @@
+message Arguments {
+	required string test = 1;
+}
+
+message Results {
+	required string test = 1;
+}
