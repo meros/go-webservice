@@ -26,16 +26,26 @@
       // If a user clicks on it, say hello!
       button.addEventListener( "click", function( ev ) {
 
-      var sumReq = builder.build().SumReq;
+      var SumReq = builder.build().SumReq;
       
-      sumReq.a = $("#valueA").val()
-      sumReq.b = $("#valueB").val()
+      var sumReq = new SumReq({"a":42, "b": 24})
+      var sumReqBB = sumReq.encode();
 
-      // TODO: NOT DONE HERE!
-      var buffer = sumReq.encode();
-
-      alert( "Hello" + sumReq.encode());
-      }, false);
+      // TODO: doesn't work... Cross site problems...
+      $.ajax({
+      url: "http://localhost:8080/ws/sum",
+      type: "post",
+      data: sumReqBB.toArrayBuffer(),
+      processData: false,
+      contentType: false,
+      success: function(){
+      alert("ok");
+      },
+      error:function(){
+      alert("error");
+      }
+      });   
+      }); 
       });
     </script>
 </body>
