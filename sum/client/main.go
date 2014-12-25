@@ -19,7 +19,7 @@ func main() {
 
 	client := &http.Client{}
 
-	request, err := http.NewRequest("POST", "http://localhost:8080/ws/sum", bytes.NewReader(argumentsData))
+	request, err := http.NewRequest("POST", "http://localhost:8080/sum/ws", bytes.NewReader(argumentsData))
 	if err != nil {
 		fmt.Println("Failed to create http request")
 		return
