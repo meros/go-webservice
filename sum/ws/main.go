@@ -30,6 +30,13 @@ func (self *SumService) GetResults(arguments proto.Message) (proto.Message, erro
 func main() {
 	fmt.Println("Will start web server at 8080")
 
-	http.Handle("/ws/sum", pbws.New(&SumService{}))
+	// Server the web service
+	http.Handle("/sum/ws", pbws.New(&SumService{}))
+
+	// Serve the js client
+	webclientPrefix := "/sum/client/"
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle(webclientPrefix, http.StripPrefix(webclientPrefix, fs))
+
 	http.ListenAndServe(":8080", nil)
 }
