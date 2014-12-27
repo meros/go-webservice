@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="ByteBufferAB.min.js"></script>
     <script src="ProtoBuf.min.js"></script>
     <title>Sum pbws client example</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Sum Web Service example</h1>
     <input id="valueA" typ="number"></input><br>
     <input id="valueB" typ="number"></input><br>
     <button id="calculateSum">Calculate Sum</button>
- 
+    
     <!-- JavaScript for interactivity. -->
     <script>
 
       $(function() {
       var ProtoBuf = dcodeIO.ProtoBuf;
       var builder = ProtoBuf.loadProto("message SumReq {\r\n\trequired uint32 a = 1;\r\n\trequired uint32 b = 2;\r\n}\r\n\r\nmessage SumResp {\r\n\trequired uint32 sum = 1;\r\n}\r\n");
-     
+      
       // Get a handle on the first button element in the document.
       var button = document.querySelector( "button" );
       
@@ -31,9 +31,8 @@
       var sumReq = new SumReq({"a":42, "b": 24})
       var sumReqBB = sumReq.encode();
 
-      // TODO: doesn't work... Cross site problems...
       $.ajax({
-      url: "http://localhost:8080/ws/sum",
+      url: "http://localhost:8080/sum/ws",
       type: "post",
       data: sumReqBB.toArrayBuffer(),
       processData: false,
@@ -44,9 +43,12 @@
       error:function(){
       alert("error");
       }
+      }).done(function(data) {
+      // TODO: I cannot receive binary data like this. 
+      alert(data);
       });   
       }); 
       });
     </script>
-</body>
+  </body>
 </html>
