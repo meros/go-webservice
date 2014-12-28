@@ -12,3 +12,18 @@ Client side:
 * go
 * js
 * c++
+* 
+
+Current status:
+A simple decoder/encoder for protocol buffers
+A simple web service library
+
+An manually coded example server (send 2 uint32, receive sum as result)
+* go webservice
+* go client
+* html/js client
+
+Next steps:
+* C++ client (maybe)
+* move from monolithic webservice/clients to generatable library + implementation (still manually coded) with clean and usable API
+* Create templates and generate example libraries from templates
