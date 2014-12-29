@@ -1,3 +1,5 @@
+// Example webservice, using pbws
+
 package main
 
 import (
@@ -31,7 +33,7 @@ func main() {
 	fmt.Println("Will start web server at 8080")
 
 	// Server the web service
-	http.Handle("/sum/ws", pbws.New(&SumService{}))
+	http.Handle("/sum/ws", pbws.NewWebService(&SumService{}))
 
 	// Serve the js client
 	webclientPrefix := "/sum/client/"

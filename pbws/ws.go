@@ -8,11 +8,19 @@ import (
 	"net/http"
 )
 
+type ProtobufWebService interface {
+	// Return arguments message for pbws to fill in
+	GetArguments() (proto.Message, error)
+
+	// Return results to send as a response to provided arguments
+	GetResults(arguments proto.Message) (proto.Message, error)
+}
+
 type HttpHandler struct {
 	ws ProtobufWebService
 }
 
-func New(ws ProtobufWebService) *HttpHandler {
+func NewWebService(ws ProtobufWebService) *HttpHandler {
 	return &HttpHandler{ws}
 }
 
@@ -63,12 +71,4 @@ func (self *HttpHandler) handle(argumentsData []byte) ([]byte, error) {
 	}
 
 	return resultsData, nil
-}
-
-type ProtobufWebService interface {
-	// Return arguments message for pbws to fill in
-	GetArguments() (proto.Message, error)
-
-	// Return results to send as a response to provided arguments
-	GetResults(arguments proto.Message) (proto.Message, error)
 }

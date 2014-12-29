@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	// TODO: move most of the code here to pbws/client.go
 	arguments := &protocol.SumReq{A: proto.Uint32(42), B: proto.Uint32(42)}
 	argumentsData, err := proto.Marshal(arguments)
 	if err != nil {
