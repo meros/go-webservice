@@ -3,10 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="jquery.binarytransport.js"></script>
-    <script src="ByteBufferAB.min.js"></script>
-    <script src="ProtoBuf.min.js"></script>
+    <script data-main="scripts/main" src="scripts/require.js"></script>
     <title>Sum pbws client example</title>
 </head>
 
@@ -21,47 +18,6 @@
 
     <!-- JavaScript for interactivity. -->
     <script>
-        $(function() {
-            var ByteBuffer = dcodeIO.ByteBuffer;
-
-            var ProtoBuf = dcodeIO.ProtoBuf;
-            var builder = ProtoBuf.loadProto("message SumReq {\r\n\trequired uint32 a = 1;\r\n\trequired uint32 b = 2;\r\n}\r\n\r\nmessage SumResp {\r\n\trequired uint32 sum = 1;\r\n}\r\n");
-
-            // Get a handle on the first button element in the document.
-            var button = document.querySelector("button");
-
-            // If a user clicks on it, say hello!
-            button.addEventListener("click", function(ev) {
-
-                var Root = builder.build();
-                var SumReq = Root.SumReq;
-                var SumResp = Root.SumResp;
-
-
-                var sumReq = new SumReq({
-                    "a": parseInt($("#valueA").val()),
-                    "b": parseInt($("#valueB").val())
-                })
-                var sumReqBB = sumReq.encode();
-
-                $.ajax({
-                    url: "http://localhost:8080/sum/ws",
-                    type: "POST",
-                    data: sumReqBB.toArrayBuffer(),
-                    dataType: 'binary',
-                    responseType: 'arraybuffer',
-                    processData: false,
-                    success: function(result) {
-                        var sumRespBB = ByteBuffer.wrap(result)
-                        var sumResp = new SumResp.decode(sumRespBB)
-                        $("#valueResult").html("Result: " + sumResp.sum)
-                    },
-                    error: function() {
-                        $("#valueResult").html("Failed to query web service")
-                    }
-                });
-            });
-        });
     </script>
 </body>
 
