@@ -1,11 +1,6 @@
 requirejs.config({
-    //By default load any module IDs from js/lib
     baseUrl: 'scripts/lib',
-    //except, if the module ID starts with "app",
-    //load it from the js/app directory. paths
-    //config is relative to the baseUrl, and
-    //never includes a ".js" extension since
-    //the paths config could be for a directory.
+
     paths: {
         'ByteBuffer': 'ByteBufferAB.min',
 	'ProtoBuf': 'ProtoBuf.min',
@@ -15,26 +10,26 @@ requirejs.config({
 
     shim: {
 	'jquery.binarytransport': {
-            //These script dependencies should be loaded before loading
-            //backbone.js
             deps: ['jquery'],
-            //Once loaded, use the global 'Backbone' as the
-            //module value.
             exports: 'BinaryTransport'
 	}
     }
 });
 
-// Start the main app logic.
 requirejs(['jquery', 'sum.pbwsclient'],
 	  function   ($, sum) {
-              // If a user clicks on it, say hello!
               $("#calculateSum").click(function(ev) {
+		  // Create a req message
+		  // Note: any value errors are caught here
+		  // TODO: catch any errors and do something useful
                   var sumReq = sum.createReq({
                       "a": parseInt($("#valueA").val()),
                       "b": parseInt($("#valueB").val())
                   })
 
+		  // Call web service with callback function
+		  // TODO: handle errors
+		  // TODO: promises etc? Whats the new stuff in js land?
                   sum.call(sumReq, function(sumResp) {
 		      $("#valueResult").html(sumResp.sum)
 		  });                
