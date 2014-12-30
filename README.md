@@ -1,29 +1,22 @@
 go-webservice
 =============
 
-A web service using go/protobuf
+A web service generator for go/protobuf.
 
-This is a testbed for a bigger idea. Right now it's a simple rpc over http using protobuf for serialization. The bigger idea is to automatically generate server and client stubs where you can easily hook in custom code for:
+Goals:
+* Given a protobuf definition file, generate stubs for webservice and several web service clients including but not limited to html/js web service client.
+* Make designed and well thought throught API's easier to deploy and use (to avoid using JSON only because of ease of use)
 
-Server side:
-* go
-
-Client side:
-* go
-* js
-* c++
+Antigoals:
+* JSON
+* Interoperability with existing web service standards
 
 Current status:
-A simple decoder/encoder for protocol buffers
-A simple web service library
-
-An manually coded example server (send 2 uint32, receive sum as result)
-* go webservice
-* go client
-* html/js client
+A simple framework to enable web service clients/servers for go
+A hand coded example application, sum, consisting of a protobuf definition go server and go/js clients
 
 Next steps:
-* Create templates and generate example libraries from templates
-* More examples
-* Simpler library design (less deps?)
-* More clients
+* Complete go client library (move generic code from example application to library)
+* Extract js library (extract generic code from example html application to library)
+* Extract templates from the non-generic parts of the example application
+* Create generator application and generate sum example from templates
