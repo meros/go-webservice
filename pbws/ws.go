@@ -1,3 +1,5 @@
+// TODO: rename file
+
 package pbws
 
 import (
@@ -16,6 +18,7 @@ type ProtobufWebService interface {
 	GetResults(arguments proto.Message) (proto.Message, error)
 }
 
+// TODO: simplify names
 type HttpHandler struct {
 	ws ProtobufWebService
 }

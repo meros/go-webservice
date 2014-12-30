@@ -1,49 +1,30 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/golang/protobuf/proto"
 	"github.com/meros/go-webservice/sum/protocol"
-	"io/ioutil"
-	"net/http"
+		"github.com/meros/go-webservice/pbws"
+
 )
 
+type SumClient struct {
+}
+
+func (self *SumClient) GetResults() (proto.Message, error) {
+	return &protocol.SumResp{}, nil
+}
+
 func main() {
-	// TODO: move most of the code here to pbws/client.go
 	arguments := &protocol.SumReq{A: proto.Uint32(42), B: proto.Uint32(42)}
-	argumentsData, err := proto.Marshal(arguments)
+
+	client := pbws.NewClient(&SumClient{})
+
+	results, err := client.Call("http://localhost:8080/sum/ws", arguments)
+	
 	if err != nil {
-		fmt.Println("Failed to marshal arguments")
-		return
-	}
-
-	client := &http.Client{}
-
-	request, err := http.NewRequest("POST", "http://localhost:8080/sum/ws", bytes.NewReader(argumentsData))
-	if err != nil {
-		fmt.Println("Failed to create http request")
-		return
-	}
-
-	response, err := client.Do(request)
-
-	if err != nil {
-		fmt.Println("Failed to do request")
-		return
-	}
-
-	resultsData, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("Failed to read response")
-		return
-	}
-
-	results := &protocol.SumResp{}
-	err = proto.Unmarshal(resultsData, results)
-	if err != nil {
-		fmt.Println("Failed to unmarshal results")
-		return
+		fmt.Println("Failed to call web service, err = ", err)
+		return;
 	}
 
 	fmt.Println("All ok! Arguments:", arguments, "results:", results)
