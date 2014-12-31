@@ -1,5 +1,3 @@
-// TODO: rename file
-
 package pbws
 
 import (
@@ -10,7 +8,7 @@ import (
 	"net/http"
 )
 
-type ProtobufWebService interface {
+type ServerDeps interface {
 	// Return arguments message for pbws to fill in
 	GetArguments() (proto.Message, error)
 
@@ -18,16 +16,15 @@ type ProtobufWebService interface {
 	GetResults(arguments proto.Message) (proto.Message, error)
 }
 
-// TODO: simplify names
-type HttpHandler struct {
-	ws ProtobufWebService
+type server struct {
+	deps ServerDeps
 }
 
-func NewWebService(ws ProtobufWebService) *HttpHandler {
-	return &HttpHandler{ws}
+func NewServer(deps ServerDeps) *server {
+	return &server{deps}
 }
 
-func (self *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		io.WriteString(w, fmt.Sprintln("Wrong method, only POST accepted, got: ", r.Method))
 		return
@@ -52,8 +49,8 @@ func (self *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *HttpHandler) handle(argumentsData []byte) ([]byte, error) {
-	arguments, err := self.ws.GetArguments()
+func (self *server) handle(argumentsData []byte) ([]byte, error) {
+	arguments, err := self.deps.GetArguments()
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +60,7 @@ func (self *HttpHandler) handle(argumentsData []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	results, err := self.ws.GetResults(arguments)
+	results, err := self.deps.GetResults(arguments)
 	if err != nil {
 		return nil, err
 	}

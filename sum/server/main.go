@@ -11,14 +11,14 @@ import (
 	"net/http"
 )
 
-type SumService struct {
+type SumServer struct {
 }
 
-func (self *SumService) GetArguments() (proto.Message, error) {
+func (self *SumServer) GetArguments() (proto.Message, error) {
 	return &protocol.SumReq{}, nil
 }
 
-func (self *SumService) GetResults(arguments proto.Message) (proto.Message, error) {
+func (self *SumServer) GetResults(arguments proto.Message) (proto.Message, error) {
 	sumReq, ok := arguments.(*protocol.SumReq)
 	if !ok {
 		return nil, errors.New("Wrong type of message sent to GetResults!")
@@ -33,7 +33,7 @@ func main() {
 	fmt.Println("Will start web server at 8080")
 
 	// Server the web service
-	http.Handle("/sum/ws", pbws.NewWebService(&SumService{}))
+	http.Handle("/sum/ws", pbws.NewServer(&SumServer{}))
 
 	// Serve the js client
 	webclientPrefix := "/sum/client/"

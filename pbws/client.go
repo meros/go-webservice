@@ -7,22 +7,22 @@ import (
 	"net/http"
 )
 
-// TODO: simplify names
-type ProtobufWebClient interface {
+type ClientDeps interface {
 	// Return arguments message for pbws to fill in
 	GetResults() (proto.Message, error)
+	GetUrl() string
 }
 
-type HttpClient struct {
-	wc ProtobufWebClient
+type client struct {
+	deps ClientDeps
 }
 
-func NewClient(wc ProtobufWebClient) *HttpClient {
-	return &HttpClient{wc}
+func NewClient(wc ClientDeps) *client {
+	return &client{wc}
 }
 
 // TODO: string url here? I don't like this
-func (self *HttpClient) Call(url string, arguments proto.Message) (proto.Message, error) {
+func (self *client) Call(arguments proto.Message) (proto.Message, error) {
 	argumentsData, err := proto.Marshal(arguments)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (self *HttpClient) Call(url string, arguments proto.Message) (proto.Message
 
 	client := &http.Client{}
 
-	request, err := http.NewRequest("POST", url, bytes.NewReader(argumentsData))
+	request, err := http.NewRequest("POST", self.deps.GetUrl(), bytes.NewReader(argumentsData))
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (self *HttpClient) Call(url string, arguments proto.Message) (proto.Message
 		return nil, err
 	}
 
-	results, err := self.wc.GetResults()
+	results, err := self.deps.GetResults()
 	if err != nil {
 		return nil, err
 	}
