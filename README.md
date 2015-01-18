@@ -17,6 +17,7 @@ A simple library to enable js web service clients (still embedded in the sum exa
 A hand coded example application, sum, consisting of a protobuf definition go server and go/js clients
 
 Next steps:
+* Use sum and mirror examples as base for extracting common parts to be generated
 * Extract js library (extract generic code from example html application to library)
 * Extract templates from the non-generic parts of the example application
 * Create generator application and generate sum example from templates
