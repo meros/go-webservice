@@ -15,6 +15,7 @@ Current status:
 A simple framework to enable web service clients/servers for go
 A simple library to enable js web service clients (still embedded in the sum example)
 A hand coded example application, sum, consisting of a protobuf definition go server and go/js clients
+A hand coded example application, mirror, that will be used to see differences between two services
 
 Next steps:
 * Use sum and mirror examples as base for extracting common parts to be generated
