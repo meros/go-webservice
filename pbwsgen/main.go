@@ -4,7 +4,23 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 )
+
+func protoc(protoFile string, outDir string) {
+	os.MkdirAll(outDir, 0777)
+
+	cmd := exec.Command("protoc", strings.Join([]string{"--go_out=", outDir}, ""), protoFile)
+
+	fmt.Println(cmd)
+
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println("Failed to run protoc:", err)
+	}
+}
 
 func main() {
 	protoFilePtr := flag.String(
@@ -20,20 +36,23 @@ func main() {
 		"Resp",
 		"resp message")
 
+	serviceNamePtr := flag.String(
+		"name",
+		"service",
+		"service name")
+
 	// TODO: flags for:
 	// * generator type (go server, go client, js client)
 	// * project name
 
 	flag.Parse()
 
-	fmt.Println("Using", *protoFilePtr, "with req message:", *protoReqMessagePtr, "and resp message:", *protoRespMessagePtr)
+	fmt.Println("Using", *protoFilePtr,
+		"with req message:", *protoReqMessagePtr,
+		"and resp message:", *protoRespMessagePtr,
+		"with service name:", *serviceNamePtr)
 
-	// Make sure we have the file specified
-	_, err := os.Open(*protoFilePtr)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	outDir := strings.Join([]string{".", "out", *serviceNamePtr}, "/")
 
-	// TODO: based on generator chosen, take appropriate steps to generate code
+	protoc(*protoFilePtr, outDir)
 }
