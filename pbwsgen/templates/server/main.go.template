@@ -1,1 +1,37 @@
-// TODO: this will become the generated server
+// Example webservice, using pbws
+
+package {{.Name}}
+
+import (
+	"errors"
+	"fmt"
+	"github.com/golang/protobuf/proto"
+	"github.com/meros/go-webservice/pbws"
+	"net/http"
+)
+
+type {{.Name}}Server struct {
+}
+
+func (self *{{.Name}}Server) GetArguments() (proto.Message, error) {
+	return &{{.Req}}{}, nil
+}
+
+func (self *{{.Name}}Server) GetResults(arguments proto.Message) (proto.Message, error) {
+	req, ok := arguments.(*{{.Req}})
+	if !ok {
+		return nil, errors.New("Wrong type of message sent to GetResults!")
+	}
+	fmt.Println("Req: ", req)
+
+	resp := &{{.Resp}}{}
+	fmt.Println("Response: ", resp)
+	return resp, nil
+}
+
+// TODO: should return a http handler and take a function as parameter
+func Run() {
+	// TODO: tempoary, serve the web service
+	http.Handle("/sum/ws", pbws.NewServer(&{{.Name}}Server{}))	
+	http.ListenAndServe(":8080", nil)
+}
