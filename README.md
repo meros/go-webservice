@@ -14,10 +14,11 @@ Antigoals:
 Current status:
 A simple framework to enable web service clients/servers for go
 A simple library to enable js web service clients (still embedded in the sum example)
-A hand coded example application, sum, consisting of a protobuf definition go server and go/js clients
-A hand coded example application, mirror, that will be used to see differences between two services
+A hand coded examples
+A generator with ability to create a server library (alpha/poc state, not fully functional)
 
 Next steps:
+* Finish server generator in pbwsgen
 * Use sum and mirror examples as base for extracting common parts to be generated
 * Extract js library (extract generic code from example html application to library)
 * Extract templates from the non-generic parts of the example application
