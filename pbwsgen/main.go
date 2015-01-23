@@ -17,8 +17,6 @@ func protoc(protoFile string, outDir string) {
 		strings.Join([]string{"--go_out=", outDir}, ""),
 		strings.Join([]string{protoFile}, ""))
 
-	fmt.Println(cmd)
-
 	err := cmd.Run()
 
 	if err != nil {
@@ -37,14 +35,14 @@ func generateServer(protoFile string, reqName string, respName string) error {
 	outDir := strings.Join([]string{".", "out", protoFile}, "/")
 	protoc(strings.Join([]string{protoFile, ".proto"}, ""), outDir)
 
-	file, err := os.Create(strings.Join([]string{outDir, "main.go"}, "/"))
+	file, err := os.Create(strings.Join([]string{outDir, "server.go"}, "/"))
 	if err != nil {
 		return err
 	}
 
 	defer file.Close()
 
-	template, err := template.ParseFiles("./templates/server/main.go.template")
+	template, err := template.ParseFiles("./templates/server/server.go.template")
 	if err != nil {
 		return err
 	}

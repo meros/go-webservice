@@ -11,6 +11,7 @@ import (
 )
 
 type {{.Name}}Server struct {
+	handler func(*{{.Req}}) (*{{.Resp}})
 }
 
 func (self *{{.Name}}Server) GetArguments() (proto.Message, error) {
@@ -24,14 +25,15 @@ func (self *{{.Name}}Server) GetResults(arguments proto.Message) (proto.Message,
 	}
 	fmt.Println("Req: ", req)
 
-	resp := &{{.Resp}}{}
+	resp := self.handler(req)
+
 	fmt.Println("Response: ", resp)
 	return resp, nil
 }
 
 // TODO: should return a http handler and take a function as parameter
-func Run() {
+func Run(handler func(*{{.Req}}) (*{{.Resp}})) {
 	// TODO: tempoary, serve the web service
-	http.Handle("/sum/ws", pbws.NewServer(&{{.Name}}Server{}))	
+	http.Handle("/sum/ws", pbws.NewServer(&{{.Name}}Server{handler: handler}))	
 	http.ListenAndServe(":8080", nil)
 }
