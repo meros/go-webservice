@@ -15,11 +15,9 @@ Current status:
 A simple framework to enable web service clients/servers for go
 A simple library to enable js web service clients (still embedded in the sum example)
 A hand coded examples
-A generator with ability to create a server library (alpha/poc state, not fully functional)
+A generator with ability to create a server library and some example proto/main files using this library
 
 Next steps:
-* Finish server generator in pbwsgen
-* Use sum and mirror examples as base for extracting common parts to be generated
-* Extract js library (extract generic code from example html application to library)
-* Extract templates from the non-generic parts of the example application
-* Create generator application and generate sum example from templates
+* Make pbwsgen more friendly to where it is being run, where the proto file resides etc
+* Extract go client library and examples
+* Extract js client library and examples
