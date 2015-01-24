@@ -5,6 +5,7 @@ package main
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/meros/go-webservice/pbwsgen/out/sum"
+	"net/http"
 )
 
 func ws(req *sum.SumReq) *sum.SumResp {
@@ -12,5 +13,7 @@ func ws(req *sum.SumReq) *sum.SumResp {
 }
 
 func main() {
-	sum.Run(ws)
+	handler := sum.CreateHttpHandler(ws)
+	http.Handle("/sum/ws", handler)
+	http.ListenAndServe(":8080", nil)
 }

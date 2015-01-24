@@ -1,0 +1,7 @@
+message MirrorReq {
+	required string a = 1;
+}
+
+message MirrorResp {
+	required string a = 1;
+}

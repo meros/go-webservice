@@ -32,8 +32,6 @@ func (self *{{.Name}}Server) GetResults(arguments proto.Message) (proto.Message,
 }
 
 // TODO: should return a http handler and take a function as parameter
-func Run(handler func(*{{.Req}}) (*{{.Resp}})) {
-	// TODO: tempoary, serve the web service
-	http.Handle("/sum/ws", pbws.NewServer(&{{.Name}}Server{handler: handler}))	
-	http.ListenAndServe(":8080", nil)
+func CreateHttpHandler(handler func(*{{.Req}}) (*{{.Resp}})) http.Handler {
+	return pbws.NewServer(&{{.Name}}Server{handler: handler})
 }
