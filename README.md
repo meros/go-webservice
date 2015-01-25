@@ -18,6 +18,5 @@ A hand coded examples
 A generator with ability to create a server library and some example proto/main files using this library
 
 Next steps:
-* Make pbwsgen more friendly to where it is being run, where the proto file resides etc
 * Extract go client library and examples
 * Extract js client library and examples
