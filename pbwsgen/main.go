@@ -33,8 +33,7 @@ type serverTemplateData struct {
 	Resp            string
 }
 
-func generateServer(protoFile string, reqName string, respName string) error {
-	outDir := strings.Join([]string{".", "out", protoFile}, "/")
+func generateServer(protoFile string, reqName string, respName string, outDir string) error {
 	protoc(strings.Join([]string{protoFile, ".proto"}, ""), outDir)
 
 	file, err := os.Create(strings.Join([]string{outDir, "server.go"}, "/"))
@@ -81,6 +80,10 @@ func main() {
 		"resp",
 		"Resp",
 		"resp message")
+	outDirPtr := flag.String(
+		"out",
+		"out",
+		"out dir")
 
 	// TODO: flags for:
 	// * generator type (go server, go client, js client)
@@ -90,9 +93,10 @@ func main() {
 
 	fmt.Println("Using", *protoFilePtr,
 		"with req message:", *protoReqMessagePtr,
-		"and resp message:", *protoRespMessagePtr)
+		"and resp message:", *protoRespMessagePtr,
+		"and out dir:", *outDirPtr)
 
-	err := generateServer(*protoFilePtr, *protoReqMessagePtr, *protoRespMessagePtr)
+	err := generateServer(*protoFilePtr, *protoReqMessagePtr, *protoRespMessagePtr, *outDirPtr)
 	if err != nil {
 		fmt.Println("Error while generating server:", err)
 	}

@@ -1,10 +1,11 @@
-// Example server main using generated output from sum.proto
+// Example server main using generated output from mirror.proto
+//go:generate ../../pbwsgen -req=MirrorReq -resp=MirrorResp -proto=mirror -out=pbwslib
 
 package main
 
 import (
 	"github.com/golang/protobuf/proto"
-	"github.com/meros/go-webservice/pbwsgen/out/mirror"
+	"github.com/meros/go-webservice/pbwsgen/examples/mirror/pbwslib"
 	"net/http"
 )
 
