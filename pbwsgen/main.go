@@ -1,3 +1,5 @@
+//go:generate go-bindata templates/...
+
 package main
 
 import (
@@ -42,7 +44,14 @@ func generateServer(protoFile string, reqName string, respName string) error {
 
 	defer file.Close()
 
-	template, err := template.ParseFiles("./templates/server/server.go.template")
+	template := template.New("serverTemplate")
+
+	templateData, err := Asset("templates/server/server.go.template")
+	if err != nil {
+		return err
+	}
+
+	template, err = template.Parse(string(templateData))
 	if err != nil {
 		return err
 	}
