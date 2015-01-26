@@ -11,6 +11,17 @@ Goals:
 Antigoals:
 * JSON & interoperability with existing web service standards, it's fully possible to do something similar to this system using json schemas to make it usable with legacy services. It's not the focus of this project however. If you are looking for a general web service client stub generator you need to keep looking. This is supposed to be an end to end solution.
 
+Overview:
+
+pbws/
+
+Simple client/server protocol buffers over web service library
+
+pbwsgen/
+
+Mani generator application plus some examples
+
+
 Current status:
 A simple framework to enable web service clients/servers for go
 A simple library to enable js web service clients (still embedded in the sum example)
