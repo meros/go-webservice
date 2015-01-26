@@ -1,5 +1,3 @@
-// Example webservice, using pbws
-
 package {{.Name}}
 
 import (

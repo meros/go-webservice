@@ -1,11 +1,11 @@
 // Example server main using generated output from sum.proto
-//go:generate ../../pbwsgen -req=SumReq -resp=SumResp -proto=sum -out=pbwslib
+//go:generate ../../pbwsgen -req=SumReq -resp=SumResp -proto=./sum.proto -out_server=server -out_client=client
 
 package main
 
 import (
 	"github.com/golang/protobuf/proto"
-	"github.com/meros/go-webservice/pbwsgen/examples/sum/pbwslib"
+	sum "github.com/meros/go-webservice/pbwsgen/examples/sum/server"
 	"net/http"
 )
 

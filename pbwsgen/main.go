@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -26,15 +27,15 @@ func protoc(protoFile string, outDir string) {
 	}
 }
 
-type serverTemplateData struct {
+type commonTemplateData struct {
 	Name            string
 	ProtocolPackage string
 	Req             string
 	Resp            string
 }
 
-func generateServer(protoFile string, reqName string, respName string, outDir string) error {
-	protoc(strings.Join([]string{protoFile, ".proto"}, ""), outDir)
+func generateServer(packageName string, protoFile string, reqName string, respName string, outDir string) error {
+	protoc(protoFile, outDir)
 
 	file, err := os.Create(strings.Join([]string{outDir, "server.go"}, "/"))
 	if err != nil {
@@ -55,8 +56,42 @@ func generateServer(protoFile string, reqName string, respName string, outDir st
 		return err
 	}
 
-	data := &serverTemplateData{
-		Name: protoFile,
+	data := &commonTemplateData{
+		Name: packageName,
+		Req:  reqName,
+		Resp: respName}
+	err = template.Execute(file, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func generateClient(packageName string, protoFile string, reqName string, respName string, outDir string) error {
+	protoc(protoFile, outDir)
+
+	file, err := os.Create(strings.Join([]string{outDir, "client.go"}, "/"))
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	template := template.New("clientTemplate")
+
+	templateData, err := Asset("templates/client/client.go.template")
+	if err != nil {
+		return err
+	}
+
+	template, err = template.Parse(string(templateData))
+	if err != nil {
+		return err
+	}
+
+	data := &commonTemplateData{
+		Name: packageName,
 		Req:  reqName,
 		Resp: respName}
 	err = template.Execute(file, data)
@@ -68,36 +103,64 @@ func generateServer(protoFile string, reqName string, respName string, outDir st
 }
 
 func main() {
-	protoFilePtr := flag.String(
+	var protoFile string
+	var protoReqMessage string
+	var protoRespMessage string
+	var outDirServer string
+	var outDirClient string
+
+	flag.StringVar(
+		&protoFile,
 		"proto",
-		"protocol",
-		"proto file (wihtout .proto) containing req/resp definitions, this will also be the package name for the protocol")
-	protoReqMessagePtr := flag.String(
+		"protocol file",
+		"proto file (wihtout .proto) containing req/resp definitions, this stripped name of this file will also be the package name for the protocol")
+	flag.StringVar(
+		&protoReqMessage,
 		"req",
 		"Req",
 		"req message")
-	protoRespMessagePtr := flag.String(
+	flag.StringVar(
+		&protoRespMessage,
 		"resp",
 		"Resp",
 		"resp message")
-	outDirPtr := flag.String(
-		"out",
-		"out",
-		"out dir")
-
-	// TODO: flags for:
-	// * generator type (go server, go client, js client)
-	// * project name
+	flag.StringVar(
+		&outDirServer,
+		"out_server",
+		"",
+		"out dir for server lib (include to enable generation of server)")
+	flag.StringVar(
+		&outDirClient,
+		"out_client",
+		"",
+		"out dir for client lib (include to enable generation of client)")
 
 	flag.Parse()
 
-	fmt.Println("Using", *protoFilePtr,
-		"with req message:", *protoReqMessagePtr,
-		"and resp message:", *protoRespMessagePtr,
-		"and out dir:", *outDirPtr)
+	if outDirClient == "" && outDirServer == "" {
+		flag.PrintDefaults()
+		return
+	}
 
-	err := generateServer(*protoFilePtr, *protoReqMessagePtr, *protoRespMessagePtr, *outDirPtr)
-	if err != nil {
-		fmt.Println("Error while generating server:", err)
+	packageName := filepath.Base(protoFile)
+	packageName = packageName[0 : len(packageName)-len(filepath.Ext(packageName))]
+
+	fmt.Println("Using", protoFile,
+		"with req message:", protoReqMessage,
+		"and resp message:", protoRespMessage,
+		"and package name:", packageName)
+
+	if outDirServer != "" {
+		err := generateServer(packageName, protoFile, protoReqMessage, protoRespMessage, outDirServer)
+		if err != nil {
+			fmt.Println("Error while generating server:", err)
+		}
+	}
+
+	if outDirClient != "" {
+		err := generateClient(packageName, protoFile, protoReqMessage, protoRespMessage, outDirClient)
+		if err != nil {
+			fmt.Println("Error while generating client:", err)
+		}
 	}
 }
