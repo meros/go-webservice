@@ -9,7 +9,7 @@ import (
 )
 
 type {{.Name}}Server struct {
-	handler func(*{{.Req}}) (*{{.Resp}})
+	handler func(*{{.Req}}) *{{.Resp}}
 }
 
 func (self *{{.Name}}Server) GetArguments() (proto.Message, error) {
@@ -30,6 +30,6 @@ func (self *{{.Name}}Server) GetResults(arguments proto.Message) (proto.Message,
 }
 
 // TODO: should return a http handler and take a function as parameter
-func CreateHttpHandler(handler func(*{{.Req}}) (*{{.Resp}})) http.Handler {
+func CreateHttpHandler(handler func(*{{.Req}}) *{{.Resp}}) http.Handler {
 	return pbws.NewServer(&{{.Name}}Server{handler: handler})
 }

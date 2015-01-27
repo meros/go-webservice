@@ -13,16 +13,16 @@ type ClientDeps interface {
 	GetUrl() string
 }
 
-type client struct {
+type Client struct {
 	deps ClientDeps
 }
 
-func NewClient(wc ClientDeps) *client {
-	return &client{wc}
+func NewClient(wc ClientDeps) *Client {
+	return &Client{wc}
 }
 
 // TODO: string url here? I don't like this
-func (self *client) Call(arguments proto.Message) (proto.Message, error) {
+func (self *Client) Call(arguments proto.Message) (proto.Message, error) {
 	argumentsData, err := proto.Marshal(arguments)
 	if err != nil {
 		return nil, err

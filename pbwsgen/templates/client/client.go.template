@@ -1,10 +1,9 @@
 package {{.Name}}
 
 import (
-	"fmt"
+	"errors"
 	"github.com/golang/protobuf/proto"
 	"github.com/meros/go-webservice/pbws"
-	"github.com/meros/go-webservice/sum/protocol"
 )
 
 type {{.Name}}Client struct {
@@ -19,19 +18,24 @@ func (self *{{.Name}}Client) GetUrl() string {
 	return self.url
 }
 
+type Client struct {
+	client *pbws.Client
+}
 
-// TODO: librarify
-func main() {
-	arguments := &protocol.{{.Name}}Req{A: proto.Uint32(42), B: proto.Uint32(42)}
-
-	client := pbws.NewClient(&{{.Name}}Client{url: "http://localhost:8080/ws/sum/"})
-
-	results, err := client.Call(arguments)
-
+func (self *Client) Call(req *{{.Req}}) (*{{.Resp}}, error) {
+	respMess, err := self.client.Call(req)
 	if err != nil {
-		fmt.Println("Failed to call web service, err = ", err)
-		return
+		return nil, err
 	}
 
-	fmt.Println("All ok! Arguments:", arguments, "results:", results)
+	resp, ok := respMess.(*{{.Resp}})
+	if !ok {
+		return nil, errors.New("Bad type in web service response")
+	}
+
+	return resp, nil
+}
+
+func Create(url string) *Client {
+	return &Client{client: pbws.NewClient(&{{.Name}}Client{url: url})}	
 }
