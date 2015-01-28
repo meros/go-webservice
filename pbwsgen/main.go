@@ -13,18 +13,32 @@ import (
 )
 
 // Run protoc of file with go as output (requires go protobuf plugin in path)
-func protoc(protoFile string, outDir string) {
+func protoc(protoFile string, outDir string) error {
 	os.MkdirAll(outDir, 0777)
+
+	protoAbsFile, err := filepath.Abs(protoFile)
+	if err != nil {
+		return err
+	}
 
 	cmd := exec.Command("protoc",
 		strings.Join([]string{"--go_out=", outDir}, ""),
-		strings.Join([]string{protoFile}, ""))
+		strings.Join([]string{"--proto_path=", filepath.Dir(protoAbsFile)}, ""),
+		strings.Join([]string{protoAbsFile}, ""))
 
-	err := cmd.Run()
+	err = cmd.Run()
 
 	if err != nil {
 		fmt.Println("Failed to run protoc:", err)
+		fmt.Println("protoc",
+			strings.Join([]string{"--go_out=", outDir}, ""),
+			strings.Join([]string{"--proto_path=", filepath.Dir(protoAbsFile)}, ""),
+			strings.Join([]string{protoAbsFile}, ""))
+
+		return err
 	}
+
+	return nil
 }
 
 type commonTemplateData struct {
@@ -35,7 +49,10 @@ type commonTemplateData struct {
 }
 
 func generateServer(packageName string, protoFile string, reqName string, respName string, outDir string) error {
-	protoc(protoFile, outDir)
+	err := protoc(protoFile, outDir)
+	if err != nil {
+		return err
+	}
 
 	file, err := os.Create(strings.Join([]string{outDir, "server.go"}, "/"))
 	if err != nil {
