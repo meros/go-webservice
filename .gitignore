@@ -1,1 +1,5 @@
 bindata.go
+*.client.js
+lib/client.go
+lib/server.go
+*.pb.go

@@ -42,6 +42,14 @@ func (self *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+	}
+
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 	_, err = w.Write(resultsData)
 	if err != nil {
 		io.WriteString(w, fmt.Sprintln("Failed to write response, err:", err))

@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Implementation
 func reverseString(input string) string {
 	// Get Unicode code points.
 	n := 0
@@ -32,6 +33,7 @@ func ws(req *slib.MirrorReq) *slib.MirrorResp {
 	return &slib.MirrorResp{A: proto.String(reverseString(req.GetA()))}
 }
 
+// Boilerplate
 func runServer() {
 	handler := slib.CreateHttpHandler(ws)
 	http.Handle("/mirror/ws", handler)

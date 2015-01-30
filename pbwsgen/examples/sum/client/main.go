@@ -1,5 +1,5 @@
 // Example client main using generated output from sum.proto
-//go:generate ../../../pbwsgen -req=SumReq -resp=SumResp -proto=../sum.proto -out_client=lib
+//go:generate pbwsgen -req=SumReq -resp=SumResp -proto=../sum.proto -out_client=lib
 
 package main
 

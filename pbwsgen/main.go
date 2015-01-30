@@ -5,6 +5,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	htmltemplate "html/template"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -119,12 +121,59 @@ func generateClient(packageName string, protoFile string, reqName string, respNa
 	return nil
 }
 
+func generateClientJs(packageName string, protoFile string, reqName string, respName string, outDir string) error {
+	os.MkdirAll(outDir, 0777)
+
+	protoBufBytes, err := ioutil.ReadFile(protoFile)
+	if err != nil {
+		return err
+	}
+
+	fileName := strings.Join([]string{packageName, ".client.js"}, "")
+	file, err := os.Create(strings.Join([]string{outDir, fileName}, "/"))
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	template := template.New("clientJsTemplate")
+
+	templateData, err := Asset("templates/client-js/client.js.template")
+	if err != nil {
+		return err
+	}
+
+	template, err = template.Parse(string(templateData))
+	if err != nil {
+		return err
+	}
+
+	type jsClientData struct {
+		Req                 string
+		Resp                string
+		EscapedProtoContent string
+	}
+
+	data := &jsClientData{
+		Req:                 reqName,
+		Resp:                respName,
+		EscapedProtoContent: htmltemplate.JSEscapeString(string(protoBufBytes))}
+	err = template.Execute(file, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	var protoFile string
 	var protoReqMessage string
 	var protoRespMessage string
 	var outDirServer string
 	var outDirClient string
+	var outDirClientJs string
 
 	flag.StringVar(
 		&protoFile,
@@ -151,10 +200,15 @@ func main() {
 		"out_client",
 		"",
 		"out dir for client lib (include to enable generation of client)")
+	flag.StringVar(
+		&outDirClientJs,
+		"out_client_js",
+		"",
+		"out dir for js client lib (include to enable generation of js client)")
 
 	flag.Parse()
 
-	if outDirClient == "" && outDirServer == "" {
+	if outDirClient == "" && outDirServer == "" && outDirClientJs == "" {
 		flag.PrintDefaults()
 		return
 	}
@@ -180,4 +234,12 @@ func main() {
 			fmt.Println("Error while generating client:", err)
 		}
 	}
+
+	if outDirClientJs != "" {
+		err := generateClientJs(packageName, protoFile, protoReqMessage, protoRespMessage, outDirClientJs)
+		if err != nil {
+			fmt.Println("Error while generating js client:", err)
+		}
+	}
+
 }

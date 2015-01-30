@@ -1,8 +1,0 @@
-message SumReq {
-	required uint32 a = 1;
-	required uint32 b = 2;
-}
-
-message SumResp {
-	required uint32 sum = 1;
-}
