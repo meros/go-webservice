@@ -16,7 +16,7 @@ requirejs.config({
     }
 });
 
-requirejs(['jquery', 'mirror.pbwsclient'],
+requirejs(['jquery', 'mirror.client'],
 	  function   ($, sum) {
               $("#calculateMirror").click(function(ev) {
 		  // Create a req message
@@ -29,7 +29,7 @@ requirejs(['jquery', 'mirror.pbwsclient'],
 		  // Call web service with callback function
 		  // TODO: handle errors
 		  // TODO: promises etc? Whats the new stuff in js land?
-                  sum.call(sumReq, function(sumResp) {
+                  sum.call("http://localhost:8080/mirror/ws", sumReq, function(sumResp) {
 		      $("#valueResult").html(sumResp.a)
 		  });                
               });
