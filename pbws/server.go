@@ -17,16 +17,16 @@ type ServerDeps interface {
 	GetResults(arguments proto.Message) (proto.Message, error)
 }
 
-type server struct {
+type Server struct {
 	deps ServerDeps
 }
 
 // Create a new server, the returned instance complies with interface http.Handler
-func NewServer(deps ServerDeps) *server {
-	return &server{deps}
+func NewServer(deps ServerDeps) *Server {
+	return &Server{deps}
 }
 
-func (self *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		io.WriteString(w, fmt.Sprintln("Wrong method, only POST accepted, got: ", r.Method))
 		return
@@ -59,7 +59,7 @@ func (self *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *server) handle(argumentsData []byte) ([]byte, error) {
+func (self *Server) handle(argumentsData []byte) ([]byte, error) {
 	arguments, err := self.deps.GetArguments()
 	if err != nil {
 		return nil, err
