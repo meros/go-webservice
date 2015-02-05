@@ -1,3 +1,4 @@
+// Package pbws provides client and server support for a HTTP/protobuf web service transport
 package pbws
 
 import (

@@ -1,3 +1,4 @@
+// Package pbws provides client and server support for a HTTP/protobuf web service transport
 package pbws
 
 import (
@@ -9,10 +10,10 @@ import (
 )
 
 type ServerDeps interface {
-	// Return arguments message for pbws to fill in
+	// Return a message instance of correct type wrapped in proto.Message interface for pbws to decode incoming request into
 	GetArguments() (proto.Message, error)
 
-	// Return results to send as a response to provided arguments
+	// Return a message instance of correct type and values wrapped in proto.Message interface for pbws to encode and send back to client
 	GetResults(arguments proto.Message) (proto.Message, error)
 }
 
@@ -20,6 +21,7 @@ type server struct {
 	deps ServerDeps
 }
 
+// Create a new server, the returned instance complies with interface http.Handler
 func NewServer(deps ServerDeps) *server {
 	return &server{deps}
 }
