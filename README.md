@@ -12,9 +12,13 @@ Overview:
 
 pbws/
 
+Documentation: http://godoc.org/github.com/meros/go-webservice/pbws
+
 Simple client/server protocol buffers over web service library
 
 pbwsgen/
+
+Documentation: http://godoc.org/github.com/meros/go-webservice/pbwsgen
 
 Stub/lib generator as well as some examples
 
