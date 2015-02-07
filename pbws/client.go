@@ -1,4 +1,3 @@
-// Package pbws provides client and server support for a HTTP/protobuf web service transport
 package pbws
 
 import (
@@ -9,8 +8,9 @@ import (
 )
 
 type ClientDeps interface {
-	// Return arguments message for pbws to fill in
+	// Return a message instance of correct type wrapped in proto.Message interface for pbws to decode incoming result into
 	GetResults() (proto.Message, error)
+	// Return an url to connect to
 	GetUrl() string
 }
 
@@ -18,11 +18,12 @@ type Client struct {
 	deps ClientDeps
 }
 
+// Create a new client
 func NewClient(wc ClientDeps) *Client {
 	return &Client{wc}
 }
 
-// TODO: string url here? I don't like this
+// Call web service
 func (self *Client) Call(arguments proto.Message) (proto.Message, error) {
 	argumentsData, err := proto.Marshal(arguments)
 	if err != nil {
